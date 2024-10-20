@@ -28,8 +28,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _schoolNameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               // Logo atau Gambar
               const CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage('assets/images/login_logo.png'),
+                // backgroundImage: AssetImage('assets/images/login_logo.png'),
                 backgroundColor: Colors.transparent,
               ),
               const SizedBox(height: 30),
@@ -71,17 +71,17 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 40),
 
-              // Input Email dengan validasi
+              // Input Username dengan validasi
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
                     TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
+                      controller: _usernameController,
+                      keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.email),
-                        hintText: 'Email',
+                        prefixIcon: const Icon(Icons.person),
+                        hintText: 'Username',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
@@ -92,23 +92,20 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                            .hasMatch(value)) {
-                          return 'Please enter a valid email';
+                          return 'Please enter your username';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 20),
 
-                    // Input Password dengan validasi
+                    // Input Nama Sekolah dengan validasi
                     TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
+                      controller: _schoolNameController,
+                      keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.lock),
-                        hintText: 'Password',
+                        prefixIcon: const Icon(Icons.school),
+                        hintText: 'School Name',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
@@ -119,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return 'Please enter your school name';
                         }
                         return null;
                       },
@@ -136,11 +133,14 @@ class _LoginPageState extends State<LoginPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Navigasi ke halaman berikutnya
+                      // Navigasi ke halaman berikutnya sambil mengirim data input
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const MyHomePage(),
+                          builder: (context) => MyHomePage(
+                            username: _usernameController.text,
+                            schoolName: _schoolNameController.text,
+                          ),
                         ),
                       );
                     } else {
@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
               TextButton(
                 onPressed: () {},
                 child: const Text(
-                  'Forgot Password?',
+                  'Forgot Username?',
                   style:
                       TextStyle(color: Colors.deepPurple), // Warna deepPurple
                 ),
@@ -205,7 +205,11 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+  final String username;
+  final String schoolName;
+
+  const MyHomePage(
+      {super.key, required this.username, required this.schoolName});
 
   @override
   Widget build(BuildContext context) {
@@ -229,16 +233,18 @@ class MyHomePage extends StatelessWidget {
                   backgroundImage: AssetImage('assets/images/abi.png'),
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'Abiyu Rafi',
-                  style: TextStyle(
+                // Menampilkan username yang diinput dari halaman login
+                Text(
+                  username,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'Flutter Developer & UI Designer',
+                // Menampilkan nama sekolah yang diinput dari halaman login
+                Text(
+                  schoolName,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
@@ -268,7 +274,8 @@ class SecondPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple, // Mengubah warna AppBar menjadi purple
+        backgroundColor:
+            Colors.deepPurple, // Mengubah warna AppBar menjadi purple
         title: const Text("More Details"),
       ),
       body: Padding(
@@ -330,14 +337,36 @@ class SecondPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: const [
-                          SkillItem(skill: 'Flutter Development'),
-                          SkillItem(skill: 'Backend Developer'),
-                          SkillItem(skill: 'API Integration'),
-                          SkillItem(skill: 'State Management'),
-                          SkillItem(skill: 'Responsive Design'),
+                          Icon(Icons.code, color: Colors.deepPurple),
+                          SizedBox(width: 10),
+                          Text(
+                            'Flutter',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: const [
+                          Icon(Icons.build, color: Colors.deepPurple),
+                          SizedBox(width: 10),
+                          Text(
+                            'Node.js',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: const [
+                          Icon(Icons.storage, color: Colors.deepPurple),
+                          SizedBox(width: 10),
+                          Text(
+                            'Firebase',
+                            style: TextStyle(fontSize: 16),
+                          ),
                         ],
                       ),
                     ],
@@ -346,7 +375,7 @@ class SecondPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Contact Me Section
+              // Contact Information
               Card(
                 elevation: 4,
                 shape: RoundedRectangleBorder(
@@ -356,53 +385,26 @@ class SecondPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Contact Me',
+                    children: const [
+                      Text(
+                        'Contact Information',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.deepPurple, // Warna teks purple
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      ContactItem(
-                        icon: Icons.email,
-                        text: 'Email: abiyurafii09@gmail.com',
+                      SizedBox(height: 10),
+                      Text(
+                        'Email: abiyu@example.com',
+                        style: TextStyle(fontSize: 16),
                       ),
-                      const SizedBox(height: 5),
-                      ContactItem(
-                        icon: Icons.link,
-                        text: 'LinkedIn: linkedin.com/in/abiyurafi',
-                      ),
-                      const SizedBox(height: 5),
-                      ContactItem(
-                        icon: Icons.code,
-                        text: 'GitHub: github.com/abiyurafi',
+                      SizedBox(height: 10),
+                      Text(
+                        'Phone: +62 812 3456 7890',
+                        style: TextStyle(fontSize: 16),
                       ),
                     ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Back Button
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context); // Kembali ke halaman sebelumnya
-                  },
-                  icon: const Icon(Icons.arrow_back),
-                  label: const Text('Go Back'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple, // Warna tombol purple
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0,
-                      vertical: 12.0,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
                   ),
                 ),
               ),
@@ -410,50 +412,6 @@ class SecondPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class SkillItem extends StatelessWidget {
-  final String skill;
-
-  const SkillItem({required this.skill, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Icon(
-          Icons.check_circle,
-          color: Colors.deepPurple, // Ikon check berwarna purple
-        ),
-        const SizedBox(width: 10),
-        Text(
-          skill,
-          style: const TextStyle(fontSize: 16, color: Colors.black87),
-        ),
-      ],
-    );
-  }
-}
-
-class ContactItem extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const ContactItem({required this.icon, required this.text, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: Colors.deepPurple), // Ikon contact berwarna purple
-        const SizedBox(width: 10),
-        Text(
-          text,
-          style: const TextStyle(fontSize: 16, color: Colors.black87),
-        ),
-      ],
     );
   }
 }
